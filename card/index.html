@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+
+    #logo {
+      max-width: 100px;
+      height: auto;
+      margin-right: 20px;
+    }
+
+    #game-title {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    #game-subtitle {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    #game-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .card {
+      width: 100px;
+      height: 100px;
+      background-color: #ddd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+      -webkit-user-select: none; /* Add this line for Safari support */
+      user-select: none;
+    }
+  </style>
+  <title>Kwanele's card Hunt</title>
+  <p>Match each image to complete the game. Kwanele the task is easy simply look for Masha and the bear</p>
+  <p>Hlanganisa lama karata. Umbereko ulula wena nje thola nje uMasha and the bear kulama karata.</p>
+</head>
+<body>
+
+  <header>
+    <img id="logo" src="./images/winner.png" alt="Birthday girl">
+    <div>
+      <div id="game-title">Simone's Birthday Hunt</div>
+      <div id="game-subtitle">Match the cards and solve the treasure</div>
+    </div>
+  </header>
+
+
+<div id="game-container"></div>
+
+<script>
+  const emojis = ["🎂", "🎈", "🎁", "🎉", "🍰", "🎊", "🎇", "🎆"];
+  const totalCards = emojis.length * 2;
+  const shuffledCards = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
+
+  let selectedCards = [];
+  let matchedPairs = 0;
+
+  function createCard(index) {
+    const card = document.createElement('div');
+    card.classList.add('card');
+    card.textContent = '👧🏿'
+
+    card.addEventListener('click', () => flipCard(index));
+
+    return card;
+  }
+
+  function initializeGame() {
+    const gameContainer = document.getElementById('game-container');
+
+    for (let i = 0; i < totalCards; i++) {
+      const card = createCard(i);
+      gameContainer.appendChild(card);
+    }
+  }
+
+  function flipCard(index) {
+    if (selectedCards.length === 2) {
+      return;
+    }
+
+    const card = document.querySelectorAll('.card')[index];
+    card.textContent = shuffledCards[index];
+    selectedCards.push({ index, value: shuffledCards[index] });
+
+    if (selectedCards.length === 2) {
+      setTimeout(checkMatch, 500);
+    }
+  }
+
+  function checkMatch() {
+    const [card1, card2] = selectedCards;
+
+    if (card1.value === card2.value) {
+      matchedPairs++;
+
+      if (matchedPairs === emojis.length) {
+        displayBirthdayMessage();
+      }
+    } else {
+      resetCards([card1.index, card2.index]);
+    }
+
+    selectedCards = [];
+  }
+
+  function resetCards(indices) {
+    setTimeout(() => {
+      indices.forEach(index => {
+        const card = document.querySelectorAll('.card')[index];
+        card.textContent = '👧🏿'
+      });
+    }, 500);
+  }
+
+  function displayBirthdayMessage() {
+    const gameContainer = document.getElementById('game-container');
+    gameContainer.innerHTML = '';
+
+    const messageContainer = document.createElement('div');
+    messageContainer.textContent = "Well done Simone, you've won";
+    messageContainer.style.fontSize = "1.5rem";
+    messageContainer.style.textAlign = "center";
+
+    gameContainer.appendChild(messageContainer);
+  }
+
+  initializeGame();
+</script>
+
+</body>
+</html>
+
+
+
